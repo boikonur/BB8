@@ -42,6 +42,7 @@ FASTLED_USING_NAMESPACE
 #define interval       40
 #define interval2      2 
 #define sendDelay      50 
+#define HOLO_PULSE     80
 
 //*********************************************************************************************
 // *********** IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE ************
@@ -75,20 +76,18 @@ typedef struct RECEIVE_DATA_STRUCTURE{
 byte packet[sizeof(sendFromDome)];
 recBodyData recFromBody;
 float g_domeBatt;
-bool blinkState = false;
 
 unsigned long randomMillis, previousMillis, previousMillis2, lastSendRecMillis;
 unsigned long lastHPCycleMillis, randomMillisSingle, but4StateMillis, lastBattUpdate;
 unsigned long lastBodyReceive, lastFlash;
 
-const byte numChars = 32;
-int LEDState = 1;
+
 int but4State;
-int flashtime;
-int holoPulseState = 2;
-int bpulse = 80;
-int hpCycleState, hpRed, hpGreen, hpBlue;
-int rearFadeState, rearFadeRed, rearFadeBlue, rearFadeGreen;
+
+
+
+
+
 
 typedef void (*ModeFunc[])();
 ModeFunc domePattern = { off, state1, state2, state3 };

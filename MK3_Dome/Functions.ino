@@ -25,6 +25,8 @@ void Holo(){
            
 void PSILED(){
   static int psiVal=255;
+  static int flashtime;
+
   if(recFromBody.psi != 0){
     if(millis() - lastFlash > flashtime){
       lastFlash = millis();
@@ -79,6 +81,8 @@ void doubleLogicFade() {
 }
 
 void UpdateDomeState(){
+  static int LEDState = 1;
+
   if(but4State == 0){
     but4StateMillis = millis();
     but4State = 1;
@@ -94,7 +98,9 @@ void UpdateDomeState(){
 }
 
 void holoPulse(){
-  
+  static int bpulse=HOLO_PULSE;
+  static int holoPulseState = 2;
+
   if(holoPulseState == 1 && bpulse <= 155){
     bpulse++;
   }else if(bpulse >= 155){
@@ -112,60 +118,81 @@ void holoPulse(){
 }
 
 void hpCycle(){
-  if(hpCycleState == 0){
+  static int hpCycleState, hpRed, hpGreen, hpBlue;
+
+switch(hpCycleState){
+  default: break;
+
+  case 0: 
     hpRed = 0;
     hpGreen = 0;
     hpBlue = 0;
-    hpCycleState = 1;
-  }else if(hpCycleState == 1){
+    hpCycleState++;  
+  break;
+
+  case 1: 
     if( hpRed <= 250){
       hpRed += 3;
-    }else{
-      hpCycleState = 2;
-    }
-  }else if(hpCycleState == 2){
+    } else {
+      hpCycleState++;
+    }  
+  break;
+
+  case 2: 
     if(hpRed >= 10){
       hpRed -= 3;
-    }else {
-      hpCycleState = 3;
-    }
-  } else if(hpCycleState == 3){
+    } else {
+      hpCycleState++;
+    }    
+  break;
+
+  case 3:  
     if(hpGreen <= 250){
       hpGreen += 3;
-    }else {
-      hpCycleState = 4;
-    }
-  }else if(hpCycleState == 4){
+    } else {
+      hpCycleState++;
+    } 
+  break;
+
+  case 4:  
     if(hpGreen >=10){
       hpGreen -= 3;
     }else {
-      hpCycleState = 5;
+      hpCycleState++;
     }
-  }else if(hpCycleState == 5){
+  break;
+
+  case 5: 
     if(hpBlue <= 250){
       hpBlue += 3;
     }else {
-      hpCycleState = 6; 
+      hpCycleState++; 
     }
-  }else if(hpCycleState == 6){
+  break;
+  
+  case 6: 
     if(hpBlue >=10){
       hpBlue -= 3;
     }else {
-      hpCycleState = 7;
+      hpCycleState++;
     }
-  }else if(hpCycleState == 7 ){
+  break;
+  
+  case 7: 
     if(hpRed <= 250){
       hpRed+= 3;
     }else if(hpGreen <= 250){
-      hpGreen+= 3Hol
+      hpGreen+= 3;
     }else if(hpBlHol <= 250){
-      hpBlue+= 3;Hol
+      hpBlue+= 3;
     }else{
       hpCycleState=8;
     }
-  }else if(hpCycleState == 8 ){
+  break;
+
+  case 8:
     if(hpRed >= 10){
-      hpRed-= 3;
+     hpRed-= 3;
     }else if(hpGreen >= 10){
       hpGreen-= 3;
     }else if(hpBlue >= 10){
@@ -173,7 +200,8 @@ void hpCycle(){
     }else{
       hpCycleState = 1;
     }
-  }
+  break;
+}
 
   leds[HOLO_PIXEL]=CRGB(hpRed, hpGreen, hpBlue);
   //FastLED.show();  
@@ -189,6 +217,8 @@ void rearLogicRandom() {
 }
 
 void rearLogicFade() {
+  int rearFadeState, rearFadeRed, rearFadeBlue, rearFadeGreen;
+
   if(rearFadeState == 0){
     if(rearFadeRed < 24){
       rearFadeRed++;
