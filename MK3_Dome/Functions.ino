@@ -1,308 +1,282 @@
+         
+void rearLogic() {
+  for(int i = LOGIC_C_PIXEL1; i <= LOGIC_C_PIXEL2; i++){
+    leds[i]=CRGB(23, 67, 96)); //small logic is light blue
+    //FastLED.show();
+  }
+}
 
+void doubleLogic() {    
+  leds[LOGIC_A_PIXEL1]=CRGB(47, 49, 50);
+  leds[LOGIC_A_PIXEL2]=CRGB(47, 49, 50);
+  leds[LOGIC_B_PIXEL1]=CRGB(0, 0, 0);
+  leds[LOGIC_B_PIXEL2]=CRGB(0, 0, 0);
+}
+          
+void Radar_Show(){ 
+  for(int i=0; i< NUM_RADAR_LEDS; i++){
+    analogWrite(readar_pins[i], radar_leds[i]);
+  }
+        
+void Holo(){
+  leds[LOGIC_A_PIXEL1]=CRGB(0, 0, 0);
+  //FastLED.show();
+} 
+           
+void PSILED(){
+  static int psiVal=255;
+  if(recFromBody.psi != 0){
+    if(millis() - lastFlash > flashtime){
+      lastFlash = millis();
+      flashtime = random(20,70);
+      if(psiVal == 255){
+        psiVal = 60;
+      }else{
+        psiVal = 255; 
+      }
+    }     
+  }else{
+    psiVal = 0;
+  }
+    leds[1]= CRGB(psiVal,psiVal,psiVal); 
+    //FastLED.show();  
+}
 
-  //==============             
+void doubleLogicRandom() {  
+  if(millis() - randomMillis > 300) {
+    int random_i = random(2,5);
+    leds[random_i] = CRGB(random(0,255),random(0,255),random(0,255))); 
+    randomMillis = millis();
+  }
+}
+
+void doubleLogicFade() {
+  static byte Set=1;
+  static byte a;
+  static byte b;
+  if(Set == 1){
+    a++;
+    if (b > 0){
+      b--;
+    }
+  }else if (Set == 2){
+    a--;
+    b++;
+  }
+  constrain(a, 0, 50);
+  constrain(b, 0, 50);
   
-  void rearLogic() {
+  if(a== 50){
+    Set=2;
+  } else if (a == 0){
+    Set=1;
+  }
+
+  leds[LOGIC_A_PIXEL1]=CRGB(a, a, a); 
+  leds[LOGIC_A_PIXEL2]=CRGB(a, a, a); 
+  leds[LOGIC_B_PIXEL1]=CRGB(b, b, b); 
+  leds[LOGIC_B_PIXEL2]=CRGB(b, b, b);       
+}
+
+void UpdateDomeState(){
+  if(but4State == 0){
+    but4StateMillis = millis();
+    but4State = 1;
+  }
+  if(but4State == 1 && (millis() - but4StateMillis > 400)){
+    if(LEDState == 3){
+      LEDState = 1;
+    }else{
+      LEDState++;
+    }
+  but4State = 2;
+  }
+}
+
+void holoPulse(){
+  
+  if(holoPulseState == 1 && bpulse <= 155){
+    bpulse++;
+  }else if(bpulse >= 155){
+    holoPulseState = 2;
+  }
+
+  if(holoPulseState == 2 && bpulse >= 80){
+    bpulse--;
+  }else if(bpulse <= 80){
+    holoPulseState = 1;
+  }
     
-    for(int i = 0; i < 3; i++){
-      sLOGIC.setPixelColor(i, sLOGIC.Color(23, 67, 96)); //small logic is light blue
-      sLOGIC.show();
+  leds[HOLO_PIXEL]=CRGB(0, 0, bpulse); 
+  //FastLED.show();    
+}
+
+void hpCycle(){
+  if(hpCycleState == 0){
+    hpRed = 0;
+    hpGreen = 0;
+    hpBlue = 0;
+    hpCycleState = 1;
+  }else if(hpCycleState == 1){
+    if( hpRed <= 250){
+      hpRed += 3;
+    }else{
+      hpCycleState = 2;
+    }
+  }else if(hpCycleState == 2){
+    if(hpRed >= 10){
+      hpRed -= 3;
+    }else {
+      hpCycleState = 3;
+    }
+  } else if(hpCycleState == 3){
+    if(hpGreen <= 250){
+      hpGreen += 3;
+    }else {
+      hpCycleState = 4;
+    }
+  }else if(hpCycleState == 4){
+    if(hpGreen >=10){
+      hpGreen -= 3;
+    }else {
+      hpCycleState = 5;
+    }
+  }else if(hpCycleState == 5){
+    if(hpBlue <= 250){
+      hpBlue += 3;
+    }else {
+      hpCycleState = 6; 
+    }
+  }else if(hpCycleState == 6){
+    if(hpBlue >=10){
+      hpBlue -= 3;
+    }else {
+      hpCycleState = 7;
+    }
+  }else if(hpCycleState == 7 ){
+    if(hpRed <= 250){
+      hpRed+= 3;
+    }else if(hpGreen <= 250){
+      hpGreen+= 3Hol
+    }else if(hpBlHol <= 250){
+      hpBlue+= 3;Hol
+    }else{
+      hpCycleState=8;
+    }
+  }else if(hpCycleState == 8 ){
+    if(hpRed >= 10){
+      hpRed-= 3;
+    }else if(hpGreen >= 10){
+      hpGreen-= 3;
+    }else if(hpBlue >= 10){
+      hpBlue-= 3;
+    }else{
+      hpCycleState = 1;
     }
   }
 
-  //==============             
-  
-  void doubleLogic() {
-    
-    lLOGIC.setPixelColor(0, lLOGIC.Color(47, 49, 50)); //large logic is almost white
-    lLOGIC.setPixelColor(1, lLOGIC.Color(47, 49, 50)); //large logic is almost white
-    lLOGIC.setPixelColor(2, lLOGIC.Color(47, 49, 50)); //large logic is almost white
-    lLOGIC.setPixelColor(3, lLOGIC.Color(0, 0, 0)); 
-    lLOGIC.setPixelColor(4, lLOGIC.Color(0, 0, 0)); 
-    lLOGIC.setPixelColor(5, lLOGIC.Color(0, 0, 0)); 
-    lLOGIC.show();
+  leds[HOLO_PIXEL]=CRGB(hpRed, hpGreen, hpBlue);
+  //FastLED.show();  
+}
+
+void rearLogicRandom() {
+  if(millis() - randomMillisSingle > 300) {
+    int random_i = random(LOGIC_C_PIXEL1,LOGIC_C_PIXEL2);
+    leds[random_i]=CRGB(random(0,255),random(0,255),random(0,255))); 
+    //FastLED.show();
+    randomMillisSingle = millis();
+  }
+}
+
+void rearLogicFade() {
+  if(rearFadeState == 0){
+    if(rearFadeRed < 24){
+      rearFadeRed++;
+      rearFadeGreen = map(rearFadeRed, 0, 23, 0, 67);
+      rearFadeBlue = map(rearFadeRed, 0, 23, 0, 96);
+    }else{
+      rearFadeState = 1;
+    }
+  }else if(rearFadeState == 1){
+    if(rearFadeRed > 0){
+      rearFadeRed--;
+      rearFadeGreen = map(rearFadeRed, 0, 23, 0, 67);
+      rearFadeBlue = map(rearFadeRed, 0, 23, 0, 96);
+    }else{
+      rearFadeState = 0;
+    }
   }
 
-  //==============             
-  
-  void eyeLED(){ 
-    
-    EYE.setPixelColor(0, EYE.Color(0, 200, 0)); // Eye is red
-    EYE.show();
-  }
-  
-  //==============             
-  
-  void Holo(){
-    
-    HP.setPixelColor(0, HP.Color(0, 0, 0));
-    HP.show();
-  } 
+  leds[LOGIC_C_PIXEL1]=CRGB(rearFadeRed, rearFadeGreen, rearFadeBlue); 
+  leds[LOGIC_C_PIXEL2]=CRGB(rearFadeRed, rearFadeGreen, rearFadeBlue); 
+  //FastLED.show();
+}
 
-  //==============             
-  
-  void PSILED(){
-  
-    if(recFromBody.psi != 0){
-      if(millis() - lastFlash > flashtime){
-        lastFlash = millis();
-        flashtime = random(20,70);
-        if(psiVal == 255){
-          psiVal = 60;
+void off(){
+  for(int i=0; i< NUM_LEDS; i++)
+    leds[i]=CRGB(0,0,0);
+
+  for(int i=0; i< NUM_RADAR_LEDS; i++)
+    radar_leds[i]=255;
+}
+
+void state1(){
+  doubleLogic();
+  Holo();
+  rearLogic();
+}
+
+void state2(){
+  doubleLogicFade();
+  holoPulse();
+  rearLogicFade();
+
+  if(hpCycleState != 0){
+    hpCycleState = 0;
+  }
+}
+
+void state3(){
+  doubleLogicRandom();
+  hpCycle();
+  rearLogicRandom();  
+}
+
+void sendAndReceive(){
+  if(millis() - lastSendRecMillis >= recDelay){
+    if (radio.receiveDone()) {
+      if(radio.SENDERID == uint8_t(BODY_ADDRESS)){
+        if (radio.DATALEN != sizeof(recFromBody)){
+          Serial.print("Invalid payload received, not matching Payload struct! Size received: "); Serial.print(sizeof(radio.DATALEN));
+          Serial.print(" Size should be: "); Serial.println(sizeof(recFromBody)); 
         }else{
-          psiVal = 255; 
+          recFromBody = *(recBodyData*)radio.DATA;
+          PSILED(); 
+          lastBodyReceive = millis();
         }
       }     
+    }
+    lastSendRecMillis = millis(); 
+  }
+
+  battLevel();
+}
+
+void battLevel(){
+  if(millis() - lastBattUpdate >= sendDelay){
+    if(millis() - lastBodyReceive >= 3000){
+      sendFromDome.bodyBatt = 99.99;
     }else{
-      psiVal = 0;
+      sendFromDome.bodyBatt = recFromBody.bodyBatt;
     }
-  
-    #ifdef useNeoPixelPSI
-      PSI.setPixelColor(0, PSI.Color(psiVal,psiVal,psiVal)); 
-      PSI.show();
-    #else
-      analogWrite(psiPIN, psiVal); 
-    #endif 
+    g_domeBatt = analogRead(BATT_PIN);
+    g_domeBatt *= 2;    // we divided by 2, so multiply back
+    g_domeBatt *= 3.3;  // Multiply by 3.3V, our reference voltage
+    g_domeBatt /= 1024; // convert to voltage
+    sendFromDome.domeBatt = g_domeBatt;
+    lastBattUpdate = millis();
+    memcpy(packet, &sendFromDome, sizeof(sendFromDome)); //Copy data from "sendToBody" array to "send_buf" byte array 
+    radio.send(REMOTE_ADDRESS, packet, sizeof(packet)); //target node Id, message as string or byte array, message length
+    delay(5);
   }
-
-
-  
-
-//=================
-
-  void doubleLogicRandom() {
-    
-    if(millis() - randomMillis > 300) {
-      int random_i = random(0,6);
-      lLOGIC.setPixelColor(random_i, lLOGIC.Color(random(0,255),random(0,255),random(0,255))); 
-      lLOGIC.show();
-      randomMillis = millis();
-    }
-  }
-
-
-  //=================
-
-  void doubleLogicFade() {
-
-    if(Set == 1){
-      a++;
-      if (b > 0){
-        b--;
-      }
-    }else if (Set == 2){
-      a--;
-      b++;
-    }
-    constrain(a, 0, 50);
-    constrain(b, 0, 50);
-    
-    if(a== 50){
-      Set=2;
-    } else if (a == 0){
-      Set=1;
-    }
-
-    
-    lLOGIC.setPixelColor(0, lLOGIC.Color(a, a, a)); 
-    lLOGIC.setPixelColor(1, lLOGIC.Color(a, a, a)); 
-    lLOGIC.setPixelColor(2, lLOGIC.Color(a, a, a)); 
-    lLOGIC.setPixelColor(3, lLOGIC.Color(b, b, b));
-    lLOGIC.setPixelColor(4, lLOGIC.Color(b, b, b)); 
-    lLOGIC.setPixelColor(5, lLOGIC.Color(b, b, b));  
-    lLOGIC.show();
-      
-  }
-
-  void LED_State(){
-    
-    if(but4State == 0){
-      but4StateMillis = millis();
-      but4State = 1;
-    }
-    if(but4State == 1 && (millis() - but4StateMillis > 400)){
-      if(LEDState == 3){
-        LEDState = 1;
-      }else{
-        LEDState++;
-      }
-    but4State = 2;
-    }
-  }
-
-
-
-  void holoPulse(){
-    
-    if(holoPulseState == 1 && bpulse <= 155){
-      bpulse++;
-    }else if(bpulse >= 155){
-      holoPulseState = 2;
-    }
-  
-    if(holoPulseState == 2 && bpulse >= 80){
-      bpulse--;
-    }else if(bpulse <= 80){
-      holoPulseState = 1;
-    }
-    
-    HP.setPixelColor(0, HP.Color(0, 0, bpulse));
-    HP.show();
-    
-  }
-  
-  
-  void hpCycle(){
-  
-    if(hpCycleState == 0){
-      hpRed = 0;
-      hpGreen = 0;
-      hpBlue = 0;
-      hpCycleState = 1;
-    }else if(hpCycleState == 1){
-      if( hpRed <= 250){
-        hpRed += 3;
-      }else{
-        hpCycleState = 2;
-      }
-    }else if(hpCycleState == 2){
-      if(hpRed >= 10){
-        hpRed -= 3;
-      }else {
-        hpCycleState = 3;
-      }
-    } else if(hpCycleState == 3){
-      if(hpGreen <= 250){
-        hpGreen += 3;
-      }else {
-        hpCycleState = 4;
-      }
-    }else if(hpCycleState == 4){
-      if(hpGreen >=10){
-        hpGreen -= 3;
-      }else {
-        hpCycleState = 5;
-      }
-    }else if(hpCycleState == 5){
-      if(hpBlue <= 250){
-        hpBlue += 3;
-      }else {
-        hpCycleState = 6; 
-      }
-    }else if(hpCycleState == 6){
-      if(hpBlue >=10){
-        hpBlue -= 3;
-      }else {
-        hpCycleState = 7;
-      }
-    }else if(hpCycleState == 7 ){
-      if(hpRed <= 250){
-        hpRed+= 3;
-      }else if(hpGreen <= 250){
-        hpGreen+= 3;
-      }else if(hpBlue <= 250){
-        hpBlue+= 3;
-      }else{
-        hpCycleState=8;
-      }
-    }else if(hpCycleState == 8 ){
-      if(hpRed >= 10){
-        hpRed-= 3;
-      }else if(hpGreen >= 10){
-        hpGreen-= 3;
-      }else if(hpBlue >= 10){
-        hpBlue-= 3;
-      }else{
-        hpCycleState = 1;
-      }
-    }
-  
-    HP.setPixelColor(0, HP.Color(hpRed, hpGreen, hpBlue));
-    HP.show();
-    
-    
-  }
-
-  void rearLogicRandom() {
-    
-    if(millis() - randomMillisSingle > 300) {
-      int random_i = random(0,3);
-      sLOGIC.setPixelColor(random_i, sLOGIC.Color(random(0,255),random(0,255),random(0,255))); 
-      sLOGIC.show();
-      randomMillisSingle = millis();
-    }
-  }
-
-
-  void rearLogicFade() {
-    if(rearFadeState == 0){
-      if(rearFadeRed < 24){
-        rearFadeRed++;
-        rearFadeGreen = map(rearFadeRed, 0, 23, 0, 67);
-        rearFadeBlue = map(rearFadeRed, 0, 23, 0, 96);
-      }else{
-        rearFadeState = 1;
-      }
-    }else if(rearFadeState == 1){
-      if(rearFadeRed > 0){
-        rearFadeRed--;
-        rearFadeGreen = map(rearFadeRed, 0, 23, 0, 67);
-        rearFadeBlue = map(rearFadeRed, 0, 23, 0, 96);
-      }else{
-        rearFadeState = 0;
-      }
-    }
-    sLOGIC.setPixelColor(0, sLOGIC.Color(rearFadeRed, rearFadeGreen, rearFadeBlue));
-    sLOGIC.setPixelColor(1, sLOGIC.Color(rearFadeRed, rearFadeGreen, rearFadeBlue));
-    sLOGIC.setPixelColor(2, sLOGIC.Color(rearFadeRed, rearFadeGreen, rearFadeBlue));
-    sLOGIC.show();
-   
-  }
-
-
-
-  void sendAndReceive(){
-    
-    if(millis() - lastSendRecMillis >= recDelay){
-      if (radio.receiveDone()) {
-        if(radio.SENDERID == uint8_t(BODY_ADDRESS)){
-          if (radio.DATALEN != sizeof(recFromBody)){
-            Serial.print("Invalid payload received, not matching Payload struct! Size received: "); Serial.print(sizeof(radio.DATALEN));
-            Serial.print(" Size should be: "); Serial.println(sizeof(recFromBody)); 
-          }else{
-            recFromBody = *(recBodyData*)radio.DATA;
-            PSILED(); 
-            lastBodyReceive = millis();
-          }
-        }     
-      }
-      lastSendRecMillis = millis(); 
-    }
-
-    battLevel();
-  }
-
-   //==============             
-  
-  void battLevel(){
-
-    if(millis() - lastBattUpdate >= sendDelay){
-      if(millis() - lastBodyReceive >= 3000){
-        sendFromDome.bodyBatt = 99.99;
-      }else{
-        sendFromDome.bodyBatt = recFromBody.bodyBatt;
-      }
-      domeBatt1 = analogRead(battPin);
-      domeBatt1 *= 2;    // we divided by 2, so multiply back
-      domeBatt1 *= 3.3;  // Multiply by 3.3V, our reference voltage
-      domeBatt1  /= 1024; // convert to voltage
-      sendFromDome.domeBatt = domeBatt1;
-      lastBattUpdate = millis();
-      memcpy(packet, &sendFromDome, sizeof(sendFromDome)); //Copy data from "sendToBody" array to "send_buf" byte array 
-      radio.send(REMOTE_ADDRESS, packet, sizeof(packet)); //target node Id, message as string or byte array, message length
-      delay(5);
-      
-    }
-  }
-
-  //==============    
+}
