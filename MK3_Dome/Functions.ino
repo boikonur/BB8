@@ -1,9 +1,11 @@
-         
+
+#define REAR_LOGIC_COLOR1 CRGB(23, 67, 96)
+#define REAR_LOGIC_COLOR2 CRGB(23, 67, 96)
+
+
 void rearLogic() {
-  for(int i = LOGIC_C_PIXEL1; i <= LOGIC_C_PIXEL2; i++){
-    leds[i]=CRGB(23, 67, 96)); //small logic is light blue
-    //FastLED.show();
-  }
+    leds[LOGIC_C_PIXEL1]=CRGB(23, 67, 96);
+    leds[LOGIC_C_PIXEL2]=CRGB(23, 67, 96);
 }
 
 void doubleLogic() {    
@@ -12,19 +14,12 @@ void doubleLogic() {
   leds[LOGIC_B_PIXEL1]=CRGB(0, 0, 0);
   leds[LOGIC_B_PIXEL2]=CRGB(0, 0, 0);
 }
-
-void radarEye(){
-  analogWrite(RADAR_PIN1, RADAR_BRIGHTNESS);
-}
           
-void Radar_Show(){ 
-  for(int i=0; i< NUM_RADAR_LEDS; i++){
-    analogWrite(readar_pins[i], radar_leds[i]);
-  }
+
+
         
 void holo(){
   leds[LOGIC_A_PIXEL1]=CRGB(0, 0, 0);
-  //FastLED.show();
 } 
            
 void PSILED(){
@@ -45,13 +40,12 @@ void PSILED(){
     psiVal = 0;
   }
     leds[1]= CRGB(psiVal,psiVal,psiVal); 
-    //FastLED.show();  
 }
 
 void doubleLogicRandom() {  
   if(millis() - randomMillis > 300) {
     int random_i = random(2,5);
-    leds[random_i] = CRGB(random(0,255),random(0,255),random(0,255))); 
+    leds[random_i] = CRGB(random(0,255), random(0,255), random(0,255)); 
     randomMillis = millis();
   }
 }
@@ -117,8 +111,7 @@ void holoPulse(){
     holoPulseState = 1;
   }
     
-  leds[HOLO_PIXEL]=CRGB(0, 0, bpulse); 
-  //FastLED.show();    
+  leds[HOLO_PIXEL]=CRGB(0, 0, bpulse);   
 }
 
 void holoCycle(){
@@ -187,7 +180,7 @@ switch(hpCycleState){
       hpRed+= 3;
     }else if(hpGreen <= 250){
       hpGreen+= 3;
-    }else if(hpBlHol <= 250){
+    }else if(hpBlue <= 250){
       hpBlue+= 3;
     }else{
       hpCycleState=8;
@@ -208,14 +201,12 @@ switch(hpCycleState){
 }
 
   leds[HOLO_PIXEL]=CRGB(hpRed, hpGreen, hpBlue);
-  //FastLED.show();  
 }
 
 void rearLogicRandom() {
   if(millis() - randomMillisSingle > 300) {
     int random_i = random(LOGIC_C_PIXEL1,LOGIC_C_PIXEL2);
-    leds[random_i]=CRGB(random(0,255),random(0,255),random(0,255))); 
-    //FastLED.show();
+    leds[random_i]=CRGB(random(0,255), random(0,255), random(0,255)); 
     randomMillisSingle = millis();
   }
 }
@@ -243,37 +234,49 @@ void rearLogicFade() {
 
   leds[LOGIC_C_PIXEL1]=CRGB(rearFadeRed, rearFadeGreen, rearFadeBlue); 
   leds[LOGIC_C_PIXEL2]=CRGB(rearFadeRed, rearFadeGreen, rearFadeBlue); 
-  //FastLED.show();
 }
 
-void off(){
-  for(int i=0; i< NUM_LEDS; i++)
-    leds[i]=CRGB(0,0,0);
+void bpmPSI()
+{
+  #define G_HUE 20
+  uint8_t BeatsPerMinute = 62;
+  CRGBPalette16 palette = PartyColors_p;
+  uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
+ // for( int i = 0; i < NUM_LEDS; i++) { //9948
+    leds[PSI_PIXEL] = ColorFromPalette(palette, G_HUE+(PSI_PIXEL*2), beat-G_HUE+(PSI_PIXEL*10));
+  //}
+}
 
-  for(int i=0; i< NUM_RADAR_LEDS; i++)
-    radar_leds[i]=0xFF;
+
+
+void off_state(){
+  
+  radar.setAnimation(BB8_RADAR_OFF, 1000, 0);
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
 }
 
 void state1(){
-  radarEye();
-  doubleLogic();
-  holo();
-  rearLogic();
+  bpmPSI();
+
+  // doubleLogic();
+  // holo();
+  // rearLogic();
 }
 
 void state2(){
-  radarEye();
+
+  radar.setAnimation(BB8_RADAR_ON, 1000, 0);
   doubleLogicFade();
   holoPulse();
   rearLogicFade();
 
-  if(hpCycleState != 0){
-    hpCycleState = 0;
-  }
+//   if(hpCycleState != 0){
+//     hpCycleState = 0;
+//   }
 }
 
 void state3(){
-  radarEye();
+  radar.setAnimation(BB8_RADAR_IDLE, 1000, 0);
   doubleLogicRandom();
   holoCycle();
   rearLogicRandom();  
@@ -292,6 +295,15 @@ void sendAndReceive(){
           lastBodyReceive = millis();
         }
       }     
+      // else if(radio.SENDERID == uint8_t(REMOTE_ADDRESS))
+      // {
+       
+
+      // leds[PSI_PIXEL]=CRGB(0, 255, 0); 
+      // DEBUG("remote packet")
+      // }
+      else 
+       DEBUG(radio.SENDERID);
     }
     lastSendRecMillis = millis(); 
   }
@@ -306,7 +318,7 @@ void battLevel(){
     }else{
       sendFromDome.bodyBatt = recFromBody.bodyBatt;
     }
-    g_domeBatt = analogRead(BATT_PIN);
+    g_domeBatt = 100;//analogRead(BATT_PIN);
     g_domeBatt *= 2;    // we divided by 2, so multiply back
     g_domeBatt *= 3.3;  // Multiply by 3.3V, our reference voltage
     g_domeBatt /= 1024; // convert to voltage
@@ -317,3 +329,81 @@ void battLevel(){
     delay(5);
   }
 }
+
+
+void FillLEDsFromPaletteColors( uint8_t colorIndex)
+{
+  uint8_t brightness = BRIGHTNESS;
+  
+  for( int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
+    colorIndex += STEPS;
+  }
+}
+
+void Rainbow()
+{ 
+  FastLED.setBrightness(  BRIGHTNESS );
+  currentPalette = RainbowColors_p;
+  
+  static uint8_t startIndex = 0;
+  startIndex = startIndex + 1; 
+
+  FillLEDsFromPaletteColors( startIndex);
+    
+  FastLED.show();
+  FastLED.delay(SPEEDO);  
+}
+
+void SetupGradientPalette()
+{
+  CRGB light = CHSV( HUE + 25, SATURATION - 20, BRIGHTNESS);
+  CRGB dark  = CHSV( HUE, SATURATION - 15, BRIGHTNESS);
+  CRGB medium = CHSV ( HUE - 25, SATURATION, BRIGHTNESS);
+  
+  currentPalette = CRGBPalette16( 
+    light,  light,  light,  light,
+    medium, medium, medium,  medium,
+    dark,  dark,  dark,  dark,
+    medium, medium, medium,  medium );
+}
+
+void Gradient()
+{
+  SetupGradientPalette();
+
+  static uint8_t startIndex = 0;
+  startIndex = startIndex + 1;  // motion speed
+  FillLEDsFromPaletteColors( startIndex);
+  FastLED.show();
+  FastLED.delay(SPEEDO);
+}
+
+
+void getSerial(Stream &Serialx, struct debug_data *data) {
+      if (Serialx.available() > 0) {
+                // read the incoming byte:
+                byte incomingByte = Serialx.read();
+                
+                
+                // say what you got:
+                Serialx.print("I received: ");
+                Serialx.println(incomingByte);
+               
+               int c = (int)incomingByte - 48;
+                if(c >=0 && c < sizeof(domePattern)/(sizeof domePattern[0]) )
+                {
+                  data->update = 1;
+                  data->mode = c;
+                  
+                 Serialx.print("nymber: ");
+                Serialx.println(data->mode);
+                }
+
+
+        }
+}
+
+
+
+
