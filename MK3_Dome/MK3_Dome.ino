@@ -37,13 +37,13 @@ FASTLED_USING_NAMESPACE
 #define LOGIC_C_PIXEL1 6
 #define LOGIC_C_PIXEL1 7
 
-#define dataDelay      0
-#define recDelay       10
-#define interval       40
-#define interval2      2 
-#define sendDelay      50 
+#define DATA_DELAY      0
+#define REC_DELAY       10
+#define UPDATE_INTERVAL 40
+#define SEND_DELAY      50 
 #define HOLO_PULSE     80
 #define RADAR_BRIGHTNESS 210
+#define BODY_TIMEOUT 3000
 
 //*********************************************************************************************
 // *********** IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE ************
@@ -127,7 +127,7 @@ void loop () {
   
   sendAndReceive();
 
-  if(millis() - previousMillis > interval) {
+  if(millis() - previousMillis > UPDATE_INTERVAL) {
     previousMillis = millis();
 
     domePattern[gCurrentMode]();

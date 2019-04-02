@@ -251,7 +251,7 @@ void off(){
     leds[i]=CRGB(0,0,0);
 
   for(int i=0; i< NUM_RADAR_LEDS; i++)
-    radar_leds[i]=255;
+    radar_leds[i]=0xFF;
 }
 
 void state1(){
@@ -280,7 +280,7 @@ void state3(){
 }
 
 void sendAndReceive(){
-  if(millis() - lastSendRecMillis >= recDelay){
+  if(millis() - lastSendRecMillis >= REC_DELAY){
     if (radio.receiveDone()) {
       if(radio.SENDERID == uint8_t(BODY_ADDRESS)){
         if (radio.DATALEN != sizeof(recFromBody)){
@@ -300,8 +300,8 @@ void sendAndReceive(){
 }
 
 void battLevel(){
-  if(millis() - lastBattUpdate >= sendDelay){
-    if(millis() - lastBodyReceive >= 3000){
+  if(millis() - lastBattUpdate >= SEND_DELAY){
+    if(millis() - lastBodyReceive >= BODY_TIMEOUT){
       sendFromDome.bodyBatt = 99.99;
     }else{
       sendFromDome.bodyBatt = recFromBody.bodyBatt;
