@@ -12,13 +12,17 @@ void doubleLogic() {
   leds[LOGIC_B_PIXEL1]=CRGB(0, 0, 0);
   leds[LOGIC_B_PIXEL2]=CRGB(0, 0, 0);
 }
+
+void radarEye(){
+  analogWrite(RADAR_PIN1, RADAR_BRIGHTNESS);
+}
           
 void Radar_Show(){ 
   for(int i=0; i< NUM_RADAR_LEDS; i++){
     analogWrite(readar_pins[i], radar_leds[i]);
   }
         
-void Holo(){
+void holo(){
   leds[LOGIC_A_PIXEL1]=CRGB(0, 0, 0);
   //FastLED.show();
 } 
@@ -117,7 +121,7 @@ void holoPulse(){
   //FastLED.show();    
 }
 
-void hpCycle(){
+void holoCycle(){
   static int hpCycleState, hpRed, hpGreen, hpBlue;
 
 switch(hpCycleState){
@@ -217,7 +221,7 @@ void rearLogicRandom() {
 }
 
 void rearLogicFade() {
-  int rearFadeState, rearFadeRed, rearFadeBlue, rearFadeGreen;
+  static int rearFadeState, rearFadeRed, rearFadeBlue, rearFadeGreen;
 
   if(rearFadeState == 0){
     if(rearFadeRed < 24){
@@ -251,12 +255,14 @@ void off(){
 }
 
 void state1(){
+  radarEye();
   doubleLogic();
-  Holo();
+  holo();
   rearLogic();
 }
 
 void state2(){
+  radarEye();
   doubleLogicFade();
   holoPulse();
   rearLogicFade();
@@ -267,8 +273,9 @@ void state2(){
 }
 
 void state3(){
+  radarEye();
   doubleLogicRandom();
-  hpCycle();
+  holoCycle();
   rearLogicRandom();  
 }
 

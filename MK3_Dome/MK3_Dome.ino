@@ -43,6 +43,7 @@ FASTLED_USING_NAMESPACE
 #define interval2      2 
 #define sendDelay      50 
 #define HOLO_PULSE     80
+#define RADAR_BRIGHTNESS 210
 
 //*********************************************************************************************
 // *********** IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE ************
@@ -84,11 +85,6 @@ unsigned long lastBodyReceive, lastFlash;
 
 int but4State;
 
-
-
-
-
-
 typedef void (*ModeFunc[])();
 ModeFunc domePattern = { off, state1, state2, state3 };
 uint8_t gCurrentMode = 0; 
@@ -99,7 +95,7 @@ void setup() {
   Serial.begin(115200);
 
   delay(3000);
-  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, PIXEL_DAT_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(BRIGHTNESS);
   
   pinMode(PIXEL_PWR_PIN, OUTPUT);
@@ -124,11 +120,9 @@ void setup() {
   }
   radio.setPowerLevel(31); // power output ranges from 0 (5dBm) to 31 (20dBm)
 
-
   Radar_Show();    
 }
   
-
 void loop () {
   
   sendAndReceive();
@@ -139,7 +133,6 @@ void loop () {
     domePattern[gCurrentMode]();
     FastLED.show();  
     Radar_Show();
-
 
     if (recFromBody.button4 == 0 && but4State < 2){
       UpdateDomeState();
