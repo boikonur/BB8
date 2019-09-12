@@ -93,9 +93,9 @@
   #define flywheelEase 3        // Speed in which flywheel will increase/decrease during gradual movements
   #define S2SEase 2.5           // speed in which side to side moves. Higher number equates to faster movement
   #define resetPin 40
-  #define drivespeed1 50        // Speed of "Slow"
-  #define drivespeed2 70        // Speed of "Med"
-  #define drivespeed3 110       // Speed of "Fast" DO NOT EXCEED 110
+  #define drivespeed1 30        // Speed of "Slow"
+  #define drivespeed2 50        // Speed of "Med"
+  #define drivespeed3 70       // Speed of "Fast" DO NOT EXCEED 110
   #define dataDelay   0
   #define recDelay    10
   #define sendDelay   40
@@ -109,7 +109,7 @@
   
   //#define disablePSIflash       // Uncomment to remove the PSI flash.    
   
-  //#define TiltDomeForwardWhenDriving      // uncomment this if you want to tilt the dome forward when driving. 
+  #define TiltDomeForwardWhenDriving      // uncomment this if you want to tilt the dome forward when driving. 
 
 
 
@@ -124,8 +124,8 @@
       //#define reverseFlywheel       // uncomment if your flywheel joystick is reversed
 
   //IMU settings:
-      //#define reversePitch          // reverse Pitch. Test this by moving the drive by hand; the weight/stabilization should move WITH you, NOT AGAINST. This means the weight should always stay down. 
-      //#define reverseRoll           // reverse Roll. Test this by moving the drive by hand; the weight/stabilization should move WITH you, NOT AGAINST. This means the weight should always stay down.
+      #define reversePitch          // reverse Pitch. Test this by moving the drive by hand; the weight/stabilization should move WITH you, NOT AGAINST. This means the weight should always stay down. 
+      #define reverseRoll           // reverse Roll. Test this by moving the drive by hand; the weight/stabilization should move WITH you, NOT AGAINST. This means the weight should always stay down.
 
   //Potentiometer settings:
       #define reverseDomeTiltPot      // uncomment to reverse this pot. MK2 ONLY This is needed if the dome tilt arm oscilates back/forth

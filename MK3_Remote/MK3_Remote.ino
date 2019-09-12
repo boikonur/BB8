@@ -51,7 +51,7 @@
   #define sendDelay     20
   #define recDelay      2
 
-  //#define serialSound   //Uncomment this if you are using Serial3 for sounds in the body
+  #define serialSound   //Uncomment this if you are using Serial3 for sounds in the body
 
 
   //#define debug
@@ -77,7 +77,7 @@
   #define DRIVE_ADDRESS   4
   
   //Match frequency to the hardware version of the radio on your Feather
-  #define FREQUENCY     RF69_915MHZ
+  #define FREQUENCY     RF69_433MHZ
   #define IS_RFM69HCW   true // set to 'true' if you are using an RFM69HCW module
   
   //*********************************************************************************************
@@ -290,4 +290,3 @@
     }
   }
   
-
